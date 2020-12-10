@@ -4,7 +4,7 @@ name: build-on-pr
 
 jobs:
   check:
-    name: Check
+    name: pr-Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,7 +18,7 @@ jobs:
           command: check
 
   test:
-    name: Test Suite
+    name: pr-Test Suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
           command: test
 
   fmt:
-    name: Rustfmt
+    name: pr-Rustfmt
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -48,7 +48,7 @@ jobs:
           args: --all -- --check
 
   clippy:
-    name: Clippy
+    name: pr-Clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
