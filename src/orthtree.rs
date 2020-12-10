@@ -38,12 +38,14 @@ pub struct Orthtree<const D: usize, const N: usize> {
     orthant: Orthant<D, N>,
 }
 
-// impl<const D: usize, const N: usize> Orthtree<D,N>{
-//     pub new() -> Self{
-
-//     }
-
-// }
+impl<const D: usize, const N: usize> Orthtree<D, N> {
+    pub fn new() -> Self {
+        Self {
+            data: Vec::new(),
+            orthant: Orthant::new([0.0; D], [0.0; D]),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
