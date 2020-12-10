@@ -1,0 +1,26 @@
+on: [push]
+
+name: test-coverage
+
+jobs:
+  check:
+    name: test-coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+      - run: rustup component add llvm-tools-preview
+      - run: cargo install cargo-binutils
+
+      - run: RUSTFLAGS="-Zinstrument-coverage"  LLVM_PROFILE_FILE="spds-%m.profraw" cargo test --tests
+
+
+      - run: ls
+      - run: ls target/debug/deps
+      - run: find target/debug/deps -maxdepth 1 -perm -111 -type f
+      - run: cargo profdata -- merge -sparse spds-*.profraw -o spds.profdata
+      - run: find target/debug/deps -maxdepth 1 -perm -111 -type f | xargs cargo cov -- report --instr-profile=spds.profdata 
