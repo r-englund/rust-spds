@@ -8,8 +8,8 @@ struct Orthant<const D: usize, const N: usize> {
 impl<const D: usize, const N: usize> Orthant<D, N> {
     fn new(lower_bounds: [f64; D], upper_bounds: [f64; D]) -> Self {
         Self {
-            lower_bounds: lower_bounds,
-            upper_bounds: upper_bounds,
+            lower_bounds,
+            upper_bounds,
         }
     }
 
