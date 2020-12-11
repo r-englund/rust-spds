@@ -13,11 +13,10 @@ impl<const D: usize, const N: usize> Orthant<D, N> {
         }
     }
 
-    //#region
-
     fn get_bounds(&self) -> ([f64; D], [f64; D]) {
         (self.lower_bounds, self.upper_bounds)
     }
+
     fn get_lower_bounds(&self) -> [f64; D] {
         self.lower_bounds
     }
@@ -29,7 +28,6 @@ impl<const D: usize, const N: usize> Orthant<D, N> {
     fn get_bound<const AXIS: usize>(&self) -> (f64, f64) {
         (self.lower_bounds[AXIS], self.upper_bounds[AXIS])
     }
-    //#endregion
 }
 
 pub struct Orthtree<const D: usize, const N: usize> {
