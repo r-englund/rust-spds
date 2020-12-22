@@ -76,11 +76,7 @@ where
         .collect()
 }
 
-pub fn find_n_nearest<const D: usize>(
-    points: &[[f64; D]],
-    p: [f64; D],
-    n: usize,
-) -> Vec<[f64; D]> {
+pub fn find_n_nearest<const D: usize>(points: &[[f64; D]], p: [f64; D], n: usize) -> Vec<[f64; D]> {
     let mut distances = points
         .iter()
         .enumerate()
