@@ -1,10 +1,17 @@
-[package]
-name = "spds"
-version = "0.1.0"
-authors = ["Rickard Englund <rickard@r-englund.com>"]
-edition = "2018"
 
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+cargo-features = ["named-profiles"]
 
-[dependencies]
+
+
+[profile.perf]
+inherits = "release"
+debug = true
+
+
+[workspace]
+
+members = [
+    "spds",
+    "spds-profiling",
+]
