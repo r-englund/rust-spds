@@ -12,6 +12,6 @@ spds = {path = "../spds"}
 
 rand = "0.7.3"
 
-[dependencies.tracy-rs]
-version  = "0.1.2"
-features = ["enable_profiler"]
+#[dependencies.tracy-rs]
+#version  = "0.1.2"
+#features = ["enable_profiler"]
