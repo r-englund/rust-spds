@@ -104,6 +104,12 @@ impl<const D: usize, const N: usize> Orthant<D, N> {
     }
 }
 
+impl<const D: usize, const N: usize> Default for Orthtree<D, N> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<const D: usize, const N: usize> Orthtree<D, N> {
     pub fn new() -> Self {
         Self {

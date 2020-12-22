@@ -30,6 +30,7 @@ where
     }
 }
 
+#[allow(dead_code)]
 pub fn manhattan_dist<F, const D: usize>(a: &[F; D], b: &[F; D]) -> F
 where
     F: Sub<Output = F> + Sum + Copy + PartialOrd,

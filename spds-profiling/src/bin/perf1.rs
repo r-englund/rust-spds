@@ -34,16 +34,16 @@ where
     v
 }
 
-fn test_perf<F, const D: usize>(points: &Vec<[f64; D]>, m: usize, f: F) -> Duration
+fn test_perf<F, const D: usize>(points: &[[f64; D]], m: usize, f: F) -> Duration
 where
-    F: Fn(&Vec<[f64; D]>, [f64; D], usize) -> Vec<[f64; D]>,
+    F: Fn(&[[f64; D]], [f64; D], usize) -> Vec<[f64; D]>,
 {
     let mut d: Duration = Default::default();
 
     (0..20).for_each(|_| {
         let now = Instant::now();
         let _ = f(&points, [0.03; D], m);
-        d = d + now.elapsed();
+        d += now.elapsed();
     });
     d / 20
 }
@@ -105,7 +105,7 @@ fn main() {
 
         let mut find_fracs = (0..=50)
             .map(|i| {
-                let find_frac = i as f64 / 50 as f64;
+                let find_frac = i as f64 / 50_f64;
                 let find_amount = ((find_frac * num_points as f64) as usize).max(1);
                 (find_frac, find_amount)
             })
@@ -157,7 +157,7 @@ fn main() {
         //         create_csv("perf1.csv", all_results.iter());
         //         print!("{:5} ", find_amount);
         //     });
-        println!("");
+        //println!();
     });
 
     create_csv("perf1.csv", all_results.iter());

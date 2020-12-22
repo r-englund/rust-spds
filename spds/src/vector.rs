@@ -44,7 +44,7 @@ where
 }
 
 pub fn find_n_nearest_sort<const D: usize>(
-    points: &Vec<[f64; D]>,
+    points: &[[f64; D]],
     p: [f64; D],
     n: usize,
 ) -> Vec<[f64; D]> {
@@ -52,7 +52,7 @@ pub fn find_n_nearest_sort<const D: usize>(
 }
 
 pub fn find_n_nearest_sort_dist<Distance, const D: usize>(
-    points: &Vec<[f64; D]>,
+    points: &[[f64; D]],
     p: [f64; D],
     n: usize,
     dist: Distance,
@@ -77,7 +77,7 @@ where
 }
 
 pub fn find_n_nearest<const D: usize>(
-    points: &Vec<[f64; D]>,
+    points: &[[f64; D]],
     p: [f64; D],
     n: usize,
 ) -> Vec<[f64; D]> {
