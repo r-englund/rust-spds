@@ -26,10 +26,9 @@ jobs:
           config: .github/actions/grcov-lcov.yml
       - run: mv "${{ steps.coverage-lcov.outputs.report }}" "./grcov-lcov.txt"
 
-     # - run: bash <(curl -s https://codecov.io/bash) -f ./grcov-lcov.txt -t ${{ secrets.CODECOV_TOKEN }}
+      # - run: bash <(curl -s https://codecov.io/bash) -f ./grcov-lcov.txt -t ${{ secrets.CODECOV_TOKEN }}
 
-    
-      - id: coverage-coveralls  
+      - id: coverage-coveralls
         uses: actions-rs/grcov@v0.1
         with:
           config: .github/actions/grcov-coveralls.yml

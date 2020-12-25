@@ -8,13 +8,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        name: cehckout source
+
       - uses: actions-rs/toolchain@v1
+        name: install rust
         with:
           profile: minimal
           toolchain: nightly
           override: true
 
       - uses: actions-rs/cargo@v1
+        name: run cargo check
         with:
           command: check
 
