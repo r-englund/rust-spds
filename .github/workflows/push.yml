@@ -3,12 +3,15 @@ on: [push]
 name: build-on-push
 
 jobs:
+  #####################
+  #### Cargo Check ####
+  #####################
   check:
     name: cargo check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        name: cehckout source
+        name: checkout source
 
       - uses: actions-rs/toolchain@v1
         name: install rust
@@ -22,21 +25,31 @@ jobs:
         with:
           command: check
 
+  #####################
+  #### Cargo Tests ####
+  #####################
   tests:
     name: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        name: checkout source
+
       - uses: actions-rs/toolchain@v1
+        name: install rust
         with:
           profile: minimal
           toolchain: nightly
           override: true
 
       - uses: actions-rs/cargo@v1
+        name: run cargo test
         with:
           command: test
 
+  ###############################
+  #### Cargo Formating Check ####
+  ###############################
   formating:
     name: formating
     runs-on: ubuntu-latest
@@ -54,12 +67,18 @@ jobs:
           command: fmt
           args: --all -- --check
 
+  ######################
+  #### Cargo Clippy ####
+  ######################
   clippy:
     name: clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        name: checkout source
+
       - uses: actions-rs/toolchain@v1
+        name: install rust
         with:
           profile: minimal
           toolchain: nightly
@@ -67,6 +86,51 @@ jobs:
           components: clippy
 
       - uses: actions-rs/cargo@v1
+        name: run clippy
         with:
           command: clippy
           args: -- -D warnings
+
+  #######################
+  #### Test Coverage ####
+  #######################
+  test-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        name: checkout source
+
+      - uses: actions-rs/toolchain@v1
+        name: install rust
+        with:
+          toolchain: nightly
+          override: true
+
+      - uses: actions-rs/cargo@v1
+        name: install compile/run test with coverage reporting
+        with:
+          command: test
+          args: --all-features --no-fail-fast
+        env:
+          CARGO_INCREMENTAL: "0"
+          RUSTFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
+          RUSTDOCFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
+
+      - id: coverage-lcov
+        name: Generate report
+        uses: actions-rs/grcov@v0.1
+        with:
+          config: .github/actions/grcov-lcov.yml
+      - run: mv "${{ steps.coverage-lcov.outputs.report }}" "./grcov-lcov.txt"
+
+      - id: coverage-coveralls
+        name: convert report to coveralls format
+        uses: actions-rs/grcov@v0.1
+        with:
+          config: .github/actions/grcov-coveralls.yml
+
+      - name: Upload report to https://coveralls.io/
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ${{ steps.coverage-coveralls.outputs.report }}
