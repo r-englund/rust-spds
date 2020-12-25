@@ -4,7 +4,7 @@ name: build-on-push
 
 jobs:
   check:
-    name: push-Check
+    name: cargo check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -13,23 +13,57 @@ jobs:
           profile: minimal
           toolchain: nightly
           override: true
-          components: rustfmt, clippy
 
       - uses: actions-rs/cargo@v1
         name: check
         with:
           command: check
+  
+  tests:
+    name: cargo check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
 
       - uses: actions-rs/cargo@v1
         name: tests
         with:
           command: test
+  
+  tests:
+    name: formating
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: rustfmt
       
       - uses: actions-rs/cargo@v1
         name: formating
         with:
           command: fmt
           args: --all -- --check
+  
+  clippy:
+    name: formating
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          override: true
+          components: clippy
     
       - uses: actions-rs/cargo@v1
         name: clippy 
