@@ -15,12 +15,11 @@ jobs:
           override: true
 
       - uses: actions-rs/cargo@v1
-        name: check
         with:
           command: check
-  
+
   tests:
-    name: cargo check
+    name: tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,11 +30,10 @@ jobs:
           override: true
 
       - uses: actions-rs/cargo@v1
-        name: tests
         with:
           command: test
-  
-  tests:
+
+  formating:
     name: formating
     runs-on: ubuntu-latest
     steps:
@@ -46,15 +44,14 @@ jobs:
           toolchain: nightly
           override: true
           components: rustfmt
-      
+
       - uses: actions-rs/cargo@v1
-        name: formating
         with:
           command: fmt
           args: --all -- --check
-  
+
   clippy:
-    name: formating
+    name: clippy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -64,9 +61,8 @@ jobs:
           toolchain: nightly
           override: true
           components: clippy
-    
+
       - uses: actions-rs/cargo@v1
-        name: clippy 
         with:
           command: clippy
           args: -- -D warnings
