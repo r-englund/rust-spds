@@ -6,23 +6,59 @@ use std::{
 };
 
 use crate::{
-    spatialdatastructure::SpatialDataStructure,
+    spatialdatastructure::{SPDSPoint, SpatialDataStructure},
     utils::{cmp, euclidean_dist_2},
 };
 
-impl<F, const D: usize> SpatialDataStructure for Vec<[F; D]>
+// impl<F, const D: usize> SpatialDataStructure for Vec<[F; D]>
+// where
+//     F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd,
+// {
+//     const D: usize = D;
+//     type Point = [F; D];
+//     fn length(&self) -> usize {
+//         self.len()
+//     }
+
+//     fn add_points<IT>(&mut self, points: IT)
+//     where
+//         IT: ExactSizeIterator + IntoIterator<Item = [F; D]>,
+//     {
+//         self.extend(points);
+//     }
+
+//     fn find_nearest(&self, p: Self::Point) -> Option<&Self::Point> {
+//         if self.is_empty() {
+//             return None;
+//         }
+
+//         let index = self
+//             .iter()
+//             .map(|c| euclidean_dist_2(&p, c))
+//             .enumerate()
+//             .min_by(|(_, a), (_, b)| cmp(*a, *b))
+//             .unwrap()
+//             .0;
+//         self.get(index)
+//     }
+// }
+
+impl<T> SpatialDataStructure for Vec<T>
 where
-    F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd,
+    T: 
+    //Sub<Output = T> + Mul<Output = T> + 
+    Copy + PartialOrd + SPDSPoint,
 {
-    const D: usize = D;
-    type Point = [F; D];
+    const D: usize = 1;
+    type Point = T;
     fn length(&self) -> usize {
         self.len()
     }
 
-    fn add_points<IT>(&mut self, points: IT)
+    fn add_points<U, IT>(&mut self, points: IT)
     where
-        IT: ExactSizeIterator + IntoIterator<Item = [F; D]>,
+        IT: ExactSizeIterator + IntoIterator<Item = U>,
+        U: SPDSPoint,
     {
         self.extend(points);
     }
@@ -34,7 +70,7 @@ where
 
         let index = self
             .iter()
-            .map(|c| euclidean_dist_2(&p, c))
+            .map(|c| p.distance(c))
             .enumerate()
             .min_by(|(_, a), (_, b)| cmp(*a, *b))
             .unwrap()
@@ -166,7 +202,4 @@ mod tests {
 
     type Asdf<const D: usize> = Vec<[f64; D]>;
     crate::generate_test!(Asdf);
-
-    // type Asdf = Vec<[f64; 2]>;
-    // crate::generate_test!(Asdf);
 }

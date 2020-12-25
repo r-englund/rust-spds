@@ -3,7 +3,7 @@ use std::{
     ops::{Mul, Sub},
 };
 
-fn abs_diff<F>(a: F, b: F) -> F
+pub fn abs_diff<F>(a: F, b: F) -> F
 where
     F: Sub<Output = F> + PartialOrd,
 {
