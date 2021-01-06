@@ -13,5 +13,6 @@ debug = true
 
 members = [
     "spds",
-    "spds-profiling",
+    "examples/spds-profiling",
+    "examples/find-n-nearest",
 ]

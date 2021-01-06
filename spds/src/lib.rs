@@ -2,6 +2,7 @@
 //#![feature(const_generics)]
 #![feature(test)]
 //#![feature(array_map)]
+#![feature(concat_idents)]
 
 pub mod orthtree;
 pub mod spatialdatastructure;

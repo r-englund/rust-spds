@@ -3,7 +3,7 @@ use std::{
     ops::{Mul, Sub},
 };
 
-fn abs_diff<F>(a: F, b: F) -> F
+pub fn abs_diff<F>(a: F, b: F) -> F
 where
     F: Sub<Output = F> + PartialOrd,
 {
@@ -38,6 +38,7 @@ where
     (0..D).map(|dim| abs_diff(a[dim], b[dim])).sum::<F>()
 }
 
+#[allow(dead_code)]
 pub fn cmp<F>(a: F, b: F) -> std::cmp::Ordering
 where
     F: PartialOrd,
@@ -51,11 +52,33 @@ where
     }
 }
 
+//use super::*;
+
+
+#[allow(dead_code)]
+pub fn float_eq_eps<F, const D: usize>(a: &[F; D], b: &[F; D], epsilon: F) -> bool
+where
+    F: Sub<Output = F> + PartialOrd + Copy + From<f32>,
+{
+    (0..D)
+        .find(|d: &usize| (crate::utils::abs_diff(a[*d], b[*d]) - epsilon) > 0f32.into())
+        .is_none()
+}
+
+#[allow(dead_code)]
+pub fn float_eq<F, const D: usize>(a: &[F; D], b: &[F; D]) -> bool
+where
+    F: Sub<Output = F> + PartialOrd + Copy + From<f32>,
+{
+    float_eq_eps(a, b, std::f32::EPSILON.into())
+}
+
 #[cfg(test)]
 pub mod tests {
-
+    use super::*;
     use rand::seq::SliceRandom;
 
+// #[allow(dead_code)]
     // fn rand_vec<R, const D: usize>(rng: &mut R, n: usize) -> Vec<[f64; D]>
     // where
     // R: rand::Rng,
@@ -63,11 +86,13 @@ pub mod tests {
     //     (0..n).map(|_| [0.0; D].map(|_| rng.gen::<f64>())).collect()
     // }
 
+    #[allow(dead_code)]
     pub fn inc_vec<const D: usize>(n: usize) -> Vec<[f64; D]> {
         let inv = 1.0 / (n - 1) as f64;
         (0..n).map(|i| [i as f64 * inv; D]).collect()
     }
 
+    #[allow(dead_code)]
     pub fn shuffled_inc_vec<R, const D: usize>(rng: &mut R, n: usize) -> Vec<[f64; D]>
     where
         R: rand::Rng,
@@ -75,5 +100,14 @@ pub mod tests {
         let mut v = inc_vec::<D>(n);
         v.shuffle(rng);
         v
+    }
+
+
+
+    #[test]
+    fn float_eq_test() {
+        assert!(float_eq::<f64,1>(&[0.0],&[0.0]));
+        assert!(float_eq::<f32,1>(&[0.0],&[0.0]));
+        
     }
 }

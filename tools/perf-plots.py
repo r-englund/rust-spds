@@ -112,14 +112,14 @@ def on_close(e):
     is_running = False
     print("asdf<")
 
-plt.ion()
+#plt.ion()
 fig.canvas.mpl_connect('close_event', on_close) # listen to close event
 
 data = get_data()
 shape = data.shape
 plot()
 
-plt.show(block=False)
+plt.show(block=True)
 
 while is_running:
     new_data = get_data()

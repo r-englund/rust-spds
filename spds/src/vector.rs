@@ -11,8 +11,9 @@ use crate::{
 };
 
 impl<F, const D: usize> SpatialDataStructure for Vec<[F; D]>
+//impl<'a, F, const D: usize> SpatialDataStructure for &'a Vec<[F; D]>
 where
-    F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd,
+    F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd + Copy + Clone + Sized,
 {
     const D: usize = D;
     type Point = [F; D];
@@ -27,7 +28,7 @@ where
         self.extend(points);
     }
 
-    fn find_nearest(&self, p: Self::Point) -> Option<&Self::Point> {
+    fn find_nearest(&self, p: &Self::Point) -> Option<&Self::Point> {
         if self.is_empty() {
             return None;
         }
@@ -41,24 +42,39 @@ where
             .0;
         self.get(index)
     }
+
+    fn find_n_nearest(&self, p: &Self::Point, n: usize) -> Option<Vec<Self::Point>> {
+        Some(find_n_nearest_sort(self, *p, n))
+    }
+
+    fn iter_i(&'a self) -> Self::Iter<'a> {
+        self.iter()
+    }
+
+    fn visit_all_points<Func>(&self, f: Func)
+    where
+        Func: Fn(&Self::Point),
+    {
+        self.iter().for_each(f);
+    }
 }
 
-pub fn find_n_nearest_sort<const D: usize>(
-    points: &[[f64; D]],
-    p: [f64; D],
-    n: usize,
-) -> Vec<[f64; D]> {
+pub fn find_n_nearest_sort<F, const D: usize>(points: &[[F; D]], p: [F; D], n: usize) -> Vec<[F; D]>
+where
+    F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd,
+{
     find_n_nearest_sort_dist(points, p, n, euclidean_dist_2)
 }
 
-pub fn find_n_nearest_sort_dist<Distance, const D: usize>(
-    points: &[[f64; D]],
-    p: [f64; D],
+pub fn find_n_nearest_sort_dist<F, Distance, const D: usize>(
+    points: &[[F; D]],
+    p: [F; D],
     n: usize,
     dist: Distance,
-) -> Vec<[f64; D]>
+) -> Vec<[F; D]>
 where
-    Distance: Fn(&[f64; D], &[f64; D]) -> f64,
+    Distance: Fn(&[F; D], &[F; D]) -> F,
+    F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd,
 {
     let mut ordering = points
         .iter()
@@ -76,7 +92,10 @@ where
         .collect()
 }
 
-pub fn find_n_nearest<const D: usize>(points: &[[f64; D]], p: [f64; D], n: usize) -> Vec<[f64; D]> {
+pub fn find_n_nearest<F, const D: usize>(points: &[[F; D]], p: [F; D], n: usize) -> Vec<[F; D]>
+where
+    F: Sub<Output = F> + Sum + Mul<Output = F> + Copy + PartialOrd,
+{
     let mut distances = points
         .iter()
         .enumerate()
@@ -88,12 +107,12 @@ pub fn find_n_nearest<const D: usize>(points: &[[f64; D]], p: [f64; D], n: usize
                         let d = p[dim] - a[dim];
                         d * d
                     })
-                    .sum::<f64>(),
+                    .sum::<F>(),
             )
         })
         .collect::<Vec<_>>();
 
-    let mut res: Vec<[f64; D]> = Vec::with_capacity(n);
+    let mut res: Vec<[F; D]> = Vec::with_capacity(n);
     while res.len() < n {
         let (di, (i, _)) = distances
             .iter()
@@ -111,7 +130,7 @@ pub fn find_n_nearest<const D: usize>(points: &[[f64; D]], p: [f64; D], n: usize
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    //use super::*;
     //use test::Bencher;
 
     // fn bench_find_n_nearest_sort<const D: usize>(b: &mut Bencher, n: usize) {
@@ -163,10 +182,4 @@ mod tests {
     // fn bench_find_n_nearest_1000(b: &mut Bencher) {
     //     bench_find_n_nearest::<1>(b, 1000);
     // }
-
-    type Asdf<const D: usize> = Vec<[f64; D]>;
-    crate::generate_test!(Asdf);
-
-    // type Asdf = Vec<[f64; 2]>;
-    // crate::generate_test!(Asdf);
 }
